@@ -1,0 +1,21 @@
+Dependencies that use `include_prefix` cause fragile compile_commands.json to
+be generated. Simply generating the new compile_commands.json deletes files
+symlinked in the bazel-out folder.
+
+`includes` is not a suitable option for in-worksapce code because it causes
+serious compile warnings to be ignored completely.
+
+To try different versions, change .bazelversion and rerun ./reproduce_problem.sh.
+
+.bazelversion==5.4.1 output:
+````
+OK
+````
+
+.bazelversion==6.0.0 output:
+````
+'bazel-out/k8-fastbuild/bin/lib/_virtual_includes/math/math.h' is a broken symlink
+````
+
+Opening an editor with clangd support will demonstrate that the `my_add` symbol
+cannot be found in `main.cpp`.
